@@ -1,0 +1,23 @@
+package ru.yandex.practicum.filmorate.model;
+
+import lombok.Builder;
+import lombok.Data;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
+
+@Data
+@Builder
+public class Film {
+    @Builder.Default
+    private int id = 0;
+    @Builder.Default
+    private final String name = "";
+    @Builder.Default
+    private final String description = "";
+    @Builder.Default
+    private final Date releaseDate = Date.from(Instant.MIN);
+    @Builder.Default
+    private final Duration duration = Duration.ZERO;
+}
