@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Validator {
 
@@ -17,7 +18,7 @@ public class Validator {
         if (film.getName().isBlank()) throw new ValidationException("Film name is empty");
         if (film.getDescription().length() > MAX_FILM_DESCRIPTION_LENGTH)
             throw new ValidationException("Film description is too long.");
-        if (film.getReleaseDate().toInstant().isAfter(MIN_DATE))
+        if (film.getReleaseDate().toInstant().isBefore(MIN_DATE))
             throw new ValidationException("Film release date is not valid");
         if (film.getDuration().toMillis() <= 0) throw new ValidationException("Film duration is not valid");
     }

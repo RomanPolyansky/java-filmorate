@@ -26,7 +26,7 @@ public class FilmController {
         return new ArrayList<>(filmMap.values());
     }
 
-    @PutMapping(value = "/films")
+    @PostMapping(value = "/films")
     @ResponseBody
     public Film addFilm(@RequestBody Film film) {
         try {
@@ -43,7 +43,7 @@ public class FilmController {
         return film;
     }
 
-    @PostMapping(value = "/films")
+    @PutMapping(value = "/films")
     @ResponseBody
     public Film changeFilm(@RequestBody Film film) {
         try {
