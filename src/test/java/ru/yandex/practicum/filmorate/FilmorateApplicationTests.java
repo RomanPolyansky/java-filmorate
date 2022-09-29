@@ -20,7 +20,6 @@ import java.time.Instant;
 import java.time.temporal.TemporalAmount;
 
 @SpringBootTest(classes = FilmorateApplication.class)
-@AutoConfigureMockMvc
 class FilmorateValidationTests {
     Film film;
 
