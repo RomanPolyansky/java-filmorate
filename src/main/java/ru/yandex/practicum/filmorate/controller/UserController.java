@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.system.LoginService;
+import ru.yandex.practicum.filmorate.system.Validator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +30,7 @@ public class UserController {
     public User addUser(@RequestBody User user) {
         try {
             Validator.userValidation(user);
+            LoginService.registerUser(user);
             if (userMap.containsKey(user.getId())) {
                 throw new ValidationException("to update film use POST method");
             }
@@ -45,6 +48,7 @@ public class UserController {
     public User changeUser(@RequestBody User user) {
         try {
             Validator.userValidation(user);
+            LoginService.checkUser(user);
             if (!userMap.containsKey(user.getId())) {
                 throw new ValidationException("id is not valid for update");
             }

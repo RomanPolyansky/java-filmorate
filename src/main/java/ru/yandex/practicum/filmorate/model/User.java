@@ -18,5 +18,5 @@ public class User {
     @Builder.Default
     private String name = "";
     @Builder.Default
-    private final Date birthday = Date.from(Instant.MIN);
+    private final Date birthday = Date.from(Instant.parse("1000-12-31T00:00:00.00Z"));
 }

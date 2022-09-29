@@ -18,7 +18,7 @@ public class Film {
     @Builder.Default
     private final String description = "";
     @Builder.Default
-    private final Date releaseDate = Date.from(Instant.MIN);
+    private final Date releaseDate = Date.from(Instant.parse("1000-12-31T00:00:00.00Z"));
     @Builder.Default
     private final Duration duration = Duration.ZERO;
 }
