@@ -3,8 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -14,9 +13,9 @@ public class User {
     @Builder.Default
     private String email = "";
     @Builder.Default
-    private final String login = "";
+    private String login = "";
     @Builder.Default
     private String name = "";
     @Builder.Default
-    private final Date birthday = Date.from(Instant.parse("1000-12-31T00:00:00.00Z"));
+    private final LocalDate birthday = LocalDate.parse("1000-12-31");
 }
