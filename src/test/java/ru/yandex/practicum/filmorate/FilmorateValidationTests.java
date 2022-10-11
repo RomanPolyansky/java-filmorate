@@ -15,25 +15,7 @@ import java.time.LocalDate;
 @SpringBootTest(classes = FilmorateApplication.class)
 class FilmorateValidationTests {
     Film film;
-
     User user;
-
-    @Test
-    void emptyShouldGiveDefault() {
-        film = Film.builder().build();
-        assertEquals(0, film.getId());
-        assertEquals("", film.getName());
-        assertEquals("", film.getDescription());
-        assertEquals(0, film.getDuration());
-        assertEquals(LocalDate.parse("1000-12-31"), film.getReleaseDate());
-
-        User user = User.builder().build();
-        assertEquals(0, user.getId());
-        assertEquals("", user.getName());
-        assertEquals("", user.getEmail());
-        assertEquals("", user.getLogin());
-        assertEquals(LocalDate.parse("1000-12-31"), user.getBirthday());
-    }
 
     @Test
     void filmValidationShouldThrowValidationExceptions() {
@@ -42,6 +24,7 @@ class FilmorateValidationTests {
                 name("").
                 releaseDate(LocalDate.parse("1894-12-28")).
                 duration(-2).
+                description("test").
                 build();
         e = assertThrows(ValidationException.class, () ->
                 Validator.filmValidation(film));
@@ -51,6 +34,7 @@ class FilmorateValidationTests {
                 name("Test").
                 releaseDate(LocalDate.parse("1894-12-28")).
                 duration(-2).
+                description("test").
                 build();
         e = assertThrows(ValidationException.class, () ->
                 Validator.filmValidation(film));
@@ -58,8 +42,19 @@ class FilmorateValidationTests {
 
         film = Film.builder().
                 name("Test").
+                releaseDate(LocalDate.parse("1894-12-28")).
+                duration(-2).
+                description("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890").
+                build();
+        e = assertThrows(ValidationException.class, () ->
+                Validator.filmValidation(film));
+        assertEquals("Film description is too long.", e.getMessage());
+
+        film = Film.builder().
+                name("Test").
                 releaseDate(LocalDate.parse("1900-12-28")).
                 duration(-2).
+
                 build();
         e = assertThrows(ValidationException.class, () ->
                 Validator.filmValidation(film));
