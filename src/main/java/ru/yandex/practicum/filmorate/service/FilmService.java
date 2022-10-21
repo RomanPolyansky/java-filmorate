@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import ru.yandex.practicum.filmorate.comparator.FilmsByLikesComparator;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
@@ -11,13 +12,28 @@ import java.util.*;
 
 @Service
 public class FilmService {
-    public final FilmStorage filmStorage;
+    private final FilmStorage filmStorage;
 
     @Autowired
     public FilmService(FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
+    public Film getFilmById(int id) {
+        return filmStorage.getFilmById(id);
+    }
+
+    public List<Film> getFilms() {
+        return filmStorage.getFilms();
+    }
+
+    public Film addFilm(Film film) {
+        return filmStorage.addFilm(film);
+    }
+
+    public Film changeFilm(Film film) {
+        return filmStorage.changeFilm(film);
+    }
 
     public Film addLike(int filmId, int userId) {
         Film film = filmStorage.getFilmById(filmId);
@@ -41,13 +57,5 @@ public class FilmService {
             films = films.subList(0, count);
         }
         return films;
-    }
-
-    static class FilmsByLikesComparator implements Comparator<Film> {
-
-        @Override
-        public int compare(Film item1, Film item2) {
-            return Integer.compare(item2.getLikeUserIds().size(), item1.getLikeUserIds().size());
-        }
     }
 }

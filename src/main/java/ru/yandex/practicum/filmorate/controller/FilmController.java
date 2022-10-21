@@ -26,7 +26,7 @@ public class FilmController {
     @GetMapping("/films/{id}")
     public Film getFilms(@PathVariable String id) {
         log.info("Получен запрос GET /films/{id}");
-        return filmService.filmStorage.getFilmById(Integer.parseInt(id));
+        return filmService.getFilmById(Integer.parseInt(id));
     }
 
 
@@ -52,13 +52,13 @@ public class FilmController {
     @GetMapping("/films")
     public List<Film> getFilms() {
         log.info("Получен запрос GET /films");
-        return filmService.filmStorage.getFilms();
+        return filmService.getFilms();
     }
 
     @PostMapping(value = "/films")
     @ResponseBody
     public Film addFilm(@RequestBody Film film) {
-        filmService.filmStorage.addFilm(film);
+        filmService.addFilm(film);
         log.info(film + " is put into db");
         return film;
     }
@@ -66,7 +66,7 @@ public class FilmController {
     @PutMapping(value = "/films")
     @ResponseBody
     public Film changeFilm(@RequestBody Film film) {
-        filmService.filmStorage.changeFilm(film);
+        filmService.changeFilm(film);
         log.info(film + " is put into db");
         return film;
     }

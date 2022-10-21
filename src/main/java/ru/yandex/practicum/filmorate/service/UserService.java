@@ -13,11 +13,27 @@ import java.util.List;
 @Service
 public class UserService {
 
-    public final UserStorage userStorage;
+    private final UserStorage userStorage;
 
     @Autowired
     public UserService(UserStorage userStorage) {
         this.userStorage = userStorage;
+    }
+
+    public User getUserById(int id) {
+        return userStorage.getUserById(id);
+    }
+
+    public List<User> getUsers() {
+        return userStorage.getUsers();
+    }
+
+    public User addUser(User user) {
+        return userStorage.addUser(user);
+    }
+
+    public User changeUser(User user) {
+        return userStorage.changeUser(user);
     }
 
     public User addFriend(int userId, int friendId) {

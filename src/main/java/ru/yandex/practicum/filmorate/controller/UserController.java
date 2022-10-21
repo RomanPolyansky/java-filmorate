@@ -21,7 +21,7 @@ public class UserController {
     @GetMapping("/users/{id}")
     public User getUserById(@PathVariable String id) {
         log.info("Получен запрос GET /users/{id}");
-        return userService.userStorage.getUserById(Integer.parseInt(id));
+        return userService.getUserById(Integer.parseInt(id));
     }
 
     @PutMapping("/users/{id}/friends/{friendId}")
@@ -56,21 +56,21 @@ public class UserController {
     @GetMapping("/users")
     public List<User> getUsers() {
         log.info("Получен запрос GET /users");
-        return userService.userStorage.getUsers();
+        return userService.getUsers();
     }
 
     @PostMapping(value = "/users")
     @ResponseBody
     public User addUser(@RequestBody User user) {
         log.info("Получен запрос POST /users");
-        return userService.userStorage.addUser(user);
+        return userService.addUser(user);
     }
 
     @PutMapping(value = "/users")
     @ResponseBody
     public User changeUser(@RequestBody User user) {
         log.info("Получен запрос PUT /users");
-        return userService.userStorage.changeUser(user);
+        return userService.changeUser(user);
     }
 
     @ExceptionHandler(ValidationException.class)
