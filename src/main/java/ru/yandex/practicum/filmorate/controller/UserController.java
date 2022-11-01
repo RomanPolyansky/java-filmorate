@@ -2,54 +2,75 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.system.Validator;
+import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class UserController {
-    final Map<Integer, User> userMap = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    int id = 1;
+
+    private final UserService userService;
+
+    @GetMapping("/users/{id}")
+    public User getUserById(@PathVariable String id) {
+        log.info("Получен запрос GET /users/{id}");
+        return userService.getUserById(Integer.parseInt(id));
+    }
+
+    @PutMapping("/users/{id}/friends/{friendId}")
+    public User addFriend(@PathVariable String id, @PathVariable String friendId) {
+        log.info("Получен запрос PUT /users/{id}/friends/{friendId}");
+        return userService.addFriend(Integer.parseInt(id), Integer.parseInt(friendId));
+    }
+
+    @DeleteMapping("/users/{id}/friends/{friendId}")
+    public User deleteFriend(@PathVariable String id, @PathVariable String friendId) {
+        log.info("Получен запрос DELETE /users/{id}/friends/{friendId}");
+        return userService.removeFriend(Integer.parseInt(id), Integer.parseInt(friendId));
+    }
+
+    @GetMapping("/users/{id}/friends")
+    public List<User> getFriends(@PathVariable String id) {
+        log.info("Получен запрос GET /users/{id}/friends");
+        return userService.getFriends(Integer.parseInt(id));
+    }
+
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public List<User>  getCommonFriends(@PathVariable String id, @PathVariable String otherId) {
+        log.info("Получен запрос GET /users/{id}/friends/common/{otherId}");
+        return userService.getCommonFriends(Integer.parseInt(id), Integer.parseInt(otherId));
+    }
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/users")
     public List<User> getUsers() {
         log.info("Получен запрос GET /users");
-        return new ArrayList<>(userMap.values());
+        return userService.getUsers();
     }
 
     @PostMapping(value = "/users")
     @ResponseBody
     public User addUser(@RequestBody User user) {
-        Validator.userValidation(user);
-        if (userMap.containsKey(user.getId())) {
-            throw new ValidationException("to update film use POST method");
-        }
-        user.setId(id++);
-        userMap.put(user.getId(), user);
-        log.info(user + " is put into db");
-        return user;
+        log.info("Получен запрос POST /users");
+        return userService.addUser(user);
     }
 
     @PutMapping(value = "/users")
     @ResponseBody
     public User changeUser(@RequestBody User user) {
-        Validator.userValidation(user);
-        if (!userMap.containsKey(user.getId())) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found");
-        }
-        userMap.put(user.getId(), user);
-        log.info(user + " is put into db");
-        return user;
+        log.info("Получен запрос PUT /users");
+        return userService.changeUser(user);
     }
 
     @ExceptionHandler(ValidationException.class)
