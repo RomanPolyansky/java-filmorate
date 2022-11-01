@@ -16,4 +16,5 @@ public class User {
     private String name;
     private final LocalDate birthday;
     private final Set<Integer> friendsIdsSet = new HashSet<>();
+    private FriendshipStatus friendshipStatus;
 }
