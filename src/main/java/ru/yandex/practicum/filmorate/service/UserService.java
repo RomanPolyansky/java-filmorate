@@ -4,68 +4,82 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
 
-    private final UserStorage userStorage;
+    private final UserDao userDao;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
     }
 
-    public User getUserById(int id) {
-        return userStorage.getUserById(id);
+    public Optional<User> getUserById(int id) {
+        return userDao.getUserById(id);
     }
 
     public List<User> getUsers() {
-        return userStorage.getUsers();
+        return userDao.getUsers();
     }
 
     public User addUser(User user) {
-        return userStorage.addUser(user);
+        try {
+            return userDao.addUser(user);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public User changeUser(User user) {
-        return userStorage.changeUser(user);
+        try {
+            return userDao.changeUser(user);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    /*
+
     public User addFriend(int userId, int friendId) {
-        User user = userStorage.getUserById(userId);
-        userStorage.getUserById(friendId).getFriendsIdsSet().add(userId);
+        User user = userDao.getUserById(userId);
+        userDao.getUserById(friendId).getFriendsIdsSet().add(userId);
         user.getFriendsIdsSet().add(friendId);
         return user;
     }
 
     public User removeFriend(int userId, int friendId) {
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
+        User user = userDao.getUserById(userId);
+        User friend = userDao.getUserById(friendId);
         if (!user.getFriendsIdsSet().remove(friendId)) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Friend Not Found");
-        userStorage.getUserById(friendId).getFriendsIdsSet().remove(userId);
+        userDao.getUserById(friendId).getFriendsIdsSet().remove(userId);
         return user;
     }
 
     public List<User> getCommonFriends(int userId, int commonId) {
-        User user = userStorage.getUserById(userId);
-        User other = userStorage.getUserById(commonId);
+        User user = userDao.getUserById(userId);
+        User other = userDao.getUserById(commonId);
 
         List<User> commonUsers = new ArrayList<>();
         for (Integer id : user.getFriendsIdsSet()) {
-            if (other.getFriendsIdsSet().contains(id)) commonUsers.add(userStorage.getUserById(id));
+            if (other.getFriendsIdsSet().contains(id)) commonUsers.add(userDao.getUserById(id));
         }
         return commonUsers;
     }
 
     public List<User> getFriends(int id) {
         List<User> listOfFriends = new ArrayList<>();
-        for (Integer friendId : userStorage.getUserById(id).getFriendsIdsSet())
-            listOfFriends.add(userStorage.getUserById(friendId));
+        for (Integer friendId : userDao.getUserById(id).getFriendsIdsSet())
+            listOfFriends.add(userDao.getUserById(friendId));
         return listOfFriends;
     }
+
+     */
 }

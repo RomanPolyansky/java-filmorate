@@ -8,10 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.GenreService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -20,10 +20,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable String id) {
+    public Optional<User> getUserById(@PathVariable String id) {
         log.info("Получен запрос GET /users/{id}");
         return userService.getUserById(Integer.parseInt(id));
     }
+
+    /*
 
     @PutMapping("/users/{id}/friends/{friendId}")
     public User addFriend(@PathVariable String id, @PathVariable String friendId) {
@@ -48,6 +50,8 @@ public class UserController {
         log.info("Получен запрос GET /users/{id}/friends/common/{otherId}");
         return userService.getCommonFriends(Integer.parseInt(id), Integer.parseInt(otherId));
     }
+
+     */
 
     @Autowired
     public UserController(UserService userService) {
