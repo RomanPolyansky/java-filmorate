@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.UserDao;
@@ -38,82 +40,33 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User addUser(User user) throws SQLException {
+        final String INSERT_SQL = "INSERT INTO users (email, login, name, birthday) VALUES (?, ?, ?, ?)";
 
-        /*
-                String sql = "INSERT INTO users(name, marital_status) VALUES (?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(INSERT_SQL, new String[]{"user_id"});
+            ps.setString(1, user.getEmail());
+            ps.setString(2, user.getLogin());
+            ps.setString(3, user.getName());
+            ps.setDate(4, java.sql.Date.valueOf(user.getBirthday().toString()));
+            return ps;
+        }, keyHolder);
 
-        var decParams = List.of(new SqlParameter(Types.VARCHAR, "name"),
-                new SqlParameter(Types.INTEGER, "marital_status"));
+        Number newId = keyHolder.getKey();
 
-        var pscf = new PreparedStatementCreatorFactory(sql, decParams) {
-            {
-                setReturnGeneratedKeys(true);
-                setGeneratedKeysColumnNames("id");
-            }
-        };
+        log.info("Новый пользователь с идентификатором {} добавлен.", keyHolder.getKey());
 
-        var psc = pscf.newPreparedStatementCreator(List.of(name, status.ordinal()));
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("select * from users where user_id = ?", keyHolder.getKey());
 
-        var keyHolder = new GeneratedKeyHolder();
-        jtm.update(psc, keyHolder);
-
-        var uid = Objects.requireNonNull(keyHolder.getKey()).longValue();
-
-        return findById(uid);
-         */
-
-
-        String user_id = jdbcTemplate.update("INSERT INTO users (email, login, name, birthday)" +
-                        "VALUES (?, ?, ?, ?)",
-                new PreparedStatementCreator() {
-                    @Override
-                    public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                        con.prepareStatement("INSERT INTO users (email, login, name, birthday)" +
-                                "VALUES (?, ?, ?, ?)", user.getEmail(), user.getLogin(), user.getName(), user.getBirthday())
-                        return null;
-                    }
-
-                    public void setValues(PreparedStatement preparedStatement) throws SQLException {
-                        preparedStatement.setString(1, user.getEmail());
-                        preparedStatement.setString(2, user.getLogin());
-                        preparedStatement.setString(3, user.getName());
-                        preparedStatement.setDate(4, java.sql.Date.valueOf(user.getBirthday().toString()));
-                    }
-                });
-
-
-        String user_id = jdbcTemplate.update("INSERT INTO users (email, login, name, birthday)" +
-                        "VALUES (?, ?, ?, ?)",
-                new PreparedStatementSetter() {
-                    public void setValues(PreparedStatement preparedStatement) throws SQLException {
-                        preparedStatement.setString(1, user.getEmail());
-                        preparedStatement.setString(2, user.getLogin());
-                        preparedStatement.setString(3, user.getName());
-                        preparedStatement.setDate(4, java.sql.Date.valueOf(user.getBirthday().toString()));
-                    }
-                });
-
-
-                /*,
-                new ResultSetExtractor<String>() {
-                    public String extractData(ResultSet rs) throws SQLException {
-                        return rs.getString("user_id");
-                    }
-                });
-
-                 */
-
-        //обрабатываем результат выполнения запроса
-        log.info("Добавлен пользователь: {}", user_id);
-
-        return makeUser(jdbcTemplate.queryForRowSet("select * from users where user_id = ?", user_id));
+        if (userRows.next()) {
+            return  User.builder().id(userRows.getInt("user_id")).email(userRows.getString("email")).login(userRows.getString("login")).name(userRows.getString("name")).birthday(userRows.getDate("birthday").toLocalDate()).build();
+        }
+        return null;
     }
 
     @Override
     public User changeUser(User user) throws SQLException {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("UPDATE users " +
-                "SET email = ?, login = ?, name = ?, birthday = ? " +
-                "where user_id = ?", user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("UPDATE users " + "SET email = ?, login = ?, name = ?, birthday = ? " + "where user_id = ?", user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
         return makeUser(userRows);
     }
 
@@ -124,13 +77,7 @@ public class UserDaoImpl implements UserDao {
 
         // обрабатываем результат выполнения запроса
         if (userRows.next()) {
-            User user = User.builder()
-                    .id(userRows.getInt("user_id"))
-                    .email(userRows.getString("email"))
-                    .login(userRows.getString("login"))
-                    .name(userRows.getString("name"))
-                    .birthday(userRows.getDate("birthday").toLocalDate())
-                    .build();
+            User user = User.builder().id(userRows.getInt("user_id")).email(userRows.getString("email")).login(userRows.getString("login")).name(userRows.getString("name")).birthday(userRows.getDate("birthday").toLocalDate()).build();
 
             log.info("Найден пользователь: {} {}", user.getId(), user.getLogin());
 
@@ -142,22 +89,10 @@ public class UserDaoImpl implements UserDao {
     }
 
     private User makeUser(ResultSet rs) throws SQLException {
-        return User.builder()
-                .id(rs.getInt("user_id"))
-                .email(rs.getString("email"))
-                .login(rs.getString("login"))
-                .name(rs.getString("name"))
-                .birthday(rs.getDate("birthday").toLocalDate())
-                .build();
+        return User.builder().id(rs.getInt("user_id")).email(rs.getString("email")).login(rs.getString("login")).name(rs.getString("name")).birthday(rs.getDate("birthday").toLocalDate()).build();
     }
 
     private User makeUser(SqlRowSet rowSet) throws SQLException {
-        return User.builder()
-                .id(rowSet.getInt("user_id"))
-                .email(rowSet.getString("email"))
-                .login(rowSet.getString("login"))
-                .name(rowSet.getString("name"))
-                .birthday(rowSet.getDate("birthday").toLocalDate())
-                .build();
+        return User.builder().id(rowSet.getInt("user_id")).email(rowSet.getString("email")).login(rowSet.getString("login")).name(rowSet.getString("name")).birthday(rowSet.getDate("birthday").toLocalDate()).build();
     }
 }
