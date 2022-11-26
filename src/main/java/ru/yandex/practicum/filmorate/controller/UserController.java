@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.dto.UserRequestDto;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,11 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/users/{id}")
     public Optional<User> getUserById(@PathVariable String id) {
@@ -53,11 +60,6 @@ public class UserController {
 
      */
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
     @GetMapping("/users")
     public List<User> getUsers() {
         log.info("Получен запрос GET /users");
@@ -66,8 +68,9 @@ public class UserController {
 
     @PostMapping(value = "/users")
     @ResponseBody
-    public User addUser(@RequestBody User user) {
+    public User addUser(@Valid @RequestBody UserRequestDto dto) {
         log.info("Получен запрос POST /users");
+        User user = dto.toEntity();
         return userService.addUser(user);
     }
 

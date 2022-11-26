@@ -10,6 +10,5 @@ public interface UserDao {
     List<User> getUsers();
     User addUser(User user) throws SQLException;
     User changeUser(User user) throws SQLException;
-
     Optional<User> getUserById(int id);
 }
