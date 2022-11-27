@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.dto.FilmRequestDto;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -29,6 +31,7 @@ public class FilmController {
         return filmService.getFilmById(Integer.parseInt(id));
     }
 
+    /*
 
     @PutMapping("/films/{id}/like/{userId}")
     public Film addLike(@PathVariable String id, @PathVariable String userId) {
@@ -41,6 +44,8 @@ public class FilmController {
         log.info("Получен запрос REMOVE /films/{id}/like/{userId}");
         return filmService.removeLike(Integer.parseInt(id), Integer.parseInt(userId));
     }
+
+     */
 
     @GetMapping("/films/popular")
     public List<Film> getTopFilms(@RequestParam(defaultValue = "0") String count) {
@@ -57,15 +62,16 @@ public class FilmController {
 
     @PostMapping(value = "/films")
     @ResponseBody
-    public Film addFilm(@RequestBody Film film) {
-        filmService.addFilm(film);
-        log.info(film + " is put into db");
-        return film;
+    public Film addFilm(@Valid @RequestBody FilmRequestDto dto) {
+        log.info("Получен запрос POST /users");
+        Film film = dto.toEntity();
+        return filmService.addFilm(film);
     }
 
     @PutMapping(value = "/films")
     @ResponseBody
-    public Film changeFilm(@RequestBody Film film) {
+    public Film changeFilm(@Valid @RequestBody FilmRequestDto dto) {
+        Film film = dto.toEntity();
         filmService.changeFilm(film);
         log.info(film + " is put into db");
         return film;

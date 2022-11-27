@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.UserRequestDto;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -75,8 +76,9 @@ public class UserController {
 
     @PutMapping(value = "/users")
     @ResponseBody
-    public User changeUser(@RequestBody User user) {
+    public User changeUser(@Valid @RequestBody UserRequestDto dto) {
         log.info("Получен запрос PUT /users");
+        User user = dto.toEntity();
         return userService.changeUser(user);
     }
 

@@ -26,7 +26,6 @@ public class User {
         values.put("login", login);
         values.put("name", name);
         values.put("birthday", birthday);
-        values.put("friendsIdsSet", friendsIdsSet);
         return values;
     }
 }

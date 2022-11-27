@@ -64,3 +64,11 @@ create table if not exists genres
     CONSTRAINT fk_genre_id FOREIGN KEY (genre_id) REFERENCES genres(id)
     );
 
+create table if not exists film_genre
+(
+    id           identity primary key,
+    film_id    int,
+    genre_id int,
+    CONSTRAINT fk_film_id_genre FOREIGN KEY (film_id) REFERENCES films(id),
+    CONSTRAINT fk_genre_id_film FOREIGN KEY (genre_id) REFERENCES mpa(id)
+);

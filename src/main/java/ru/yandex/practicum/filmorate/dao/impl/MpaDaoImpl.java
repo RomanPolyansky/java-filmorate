@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.ReadEntityDao;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
@@ -16,13 +17,14 @@ import java.util.Optional;
 import static javax.swing.UIManager.getInt;
 import static javax.swing.UIManager.getString;
 
-public class mpaDaoImpl implements ReadEntityDao<Mpa> {
+@Component
+public class MpaDaoImpl implements ReadEntityDao<Mpa> {
 
     private final Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
 
     private final JdbcTemplate jdbcTemplate;
 
-    public mpaDaoImpl(JdbcTemplate jdbcTemplate) {
+    public MpaDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

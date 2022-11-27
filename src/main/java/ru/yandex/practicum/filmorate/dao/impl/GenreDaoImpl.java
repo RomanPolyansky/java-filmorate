@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.ReadEntityDao;
 import ru.yandex.practicum.filmorate.model.Genre;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static javax.swing.UIManager.getInt;
 import static javax.swing.UIManager.getString;
 
+@Component
 public class GenreDaoImpl implements ReadEntityDao<Genre> {
 
     private final Logger log = LoggerFactory.getLogger(UserDaoImpl.class);

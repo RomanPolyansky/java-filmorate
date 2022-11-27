@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,7 +16,7 @@ public class FilmService {
     private final ReadWriteStorage<Film> filmStorage;
 
     @Autowired
-    public FilmService(ReadWriteStorage filmStorage) {
+    public FilmService(@Qualifier("DataBase") ReadWriteStorage<Film> filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -35,17 +36,21 @@ public class FilmService {
         return filmStorage.change(film);
     }
 
+    /*
+
     public Film addLike(int filmId, int userId) {
         Film film = filmStorage.getById(filmId);
-        film.getLikeUserIds().add(userId);
+        film.getRate().add(userId);
         return film;
     }
 
     public Film removeLike(int filmId, int userId) {
         Film film = filmStorage.getById(filmId);
-        if (!film.getLikeUserIds().remove(userId)) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User's like Not Found");
+        if (!film.getRate().remove(userId)) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User's like Not Found");
         return film;
     }
+
+     */
 
     public List<Film> getTopFilms(int count) {
         List<Film> films = filmStorage.getAll();

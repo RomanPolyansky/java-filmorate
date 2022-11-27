@@ -18,7 +18,7 @@ public class UserService {
     private final ReadWriteStorage<User> userStorage;
 
     @Autowired
-    public UserService(@Qualifier("DataBase") ReadWriteStorage userStorage) {
+    public UserService(@Qualifier("DataBase") ReadWriteStorage<User> userStorage) {
         this.userStorage = userStorage;
     }
 
