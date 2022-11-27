@@ -3,10 +3,11 @@ package ru.yandex.practicum.filmorate.storage.film;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.ReadWriteStorage;
 
 import java.util.List;
 
-public class FilmDbStorage implements FilmStorage {
+public class FilmDbStorage implements ReadWriteStorage<Film> {
     FilmDao filmDao;
 
     @Autowired
@@ -15,22 +16,22 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getFilms() {
+    public List<Film> getAll() {
         return null;
     }
 
     @Override
-    public Film addFilm(Film film) {
+    public Film add(Film film) {
         return null;
     }
 
     @Override
-    public Film changeFilm(Film film) {
+    public Film change(Film film) {
         return null;
     }
 
     @Override
-    public Film getFilmById(int id) {
+    public Film getById(int id) {
         return null;
     }
 }

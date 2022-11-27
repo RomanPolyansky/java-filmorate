@@ -13,7 +13,6 @@ import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -27,7 +26,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public Optional<User> getUserById(@PathVariable String id) {
+    public User getUserById(@PathVariable String id) {
         log.info("Получен запрос GET /users/{id}");
         return userService.getUserById(Integer.parseInt(id));
     }

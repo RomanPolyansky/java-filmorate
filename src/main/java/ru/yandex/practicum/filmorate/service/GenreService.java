@@ -2,23 +2,23 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.ReadWriteStorage;
 
 import java.util.Collection;
 
 public class GenreService {
-    private final GenreStorage genreStorage;
+    private final ReadWriteStorage<Genre> genreStorage;
 
     @Autowired
-    public GenreService(GenreStorage genreStorage) {
+    public GenreService(ReadWriteStorage<Genre> genreStorage) {
         this.genreStorage = genreStorage;
     }
 
     public Genre getGenreById(int id) {
-        return genreStorage.getGenreById(id);
+        return genreStorage.getById(id);
     }
 
     public Collection<Genre> getGenres() {
-        return genreStorage.getGenres();
+        return genreStorage.getAll();
     }
 }
