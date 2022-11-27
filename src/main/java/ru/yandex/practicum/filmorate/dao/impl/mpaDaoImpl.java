@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import ru.yandex.practicum.filmorate.dao.ReadEntityDao;
-import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,52 +16,52 @@ import java.util.Optional;
 import static javax.swing.UIManager.getInt;
 import static javax.swing.UIManager.getString;
 
-public class GenreDaoImpl implements ReadEntityDao<Genre> {
+public class mpaDaoImpl implements ReadEntityDao<Mpa> {
 
     private final Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
 
     private final JdbcTemplate jdbcTemplate;
 
-    public GenreDaoImpl(JdbcTemplate jdbcTemplate) {
+    public mpaDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public List<Genre> getAll() throws SQLException {
-        String sql = "select * from genres";
-        List<Genre> genresList = jdbcTemplate.query(sql, (rs, rowNum) -> makeGenre(rs));
-        if (genresList.isEmpty()) {
+    public List<Mpa> getAll() throws SQLException {
+        String sql = "select * from mpa";
+        List<Mpa> mpaList = jdbcTemplate.query(sql, (rs, rowNum) -> makeMpa(rs));
+        if (mpaList.isEmpty()) {
             return Collections.emptyList();
         }
-        return genresList;
+        return mpaList;
     }
 
     @Override
-    public Optional<Genre> getEntityById(int id) throws SQLException {
+    public Optional<Mpa> getEntityById(int id) throws SQLException {
         // выполняем запрос к базе данных.
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet("select * from genres where id = ?", id);
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet("select * from mpa where id = ?", id);
 
         // обрабатываем результат выполнения запроса
         if (rowSet.next()) {
-            Genre genre = makeGenre(rowSet);
-            log.info("Найден жанр: {} {}", genre.getId(), genre.getName());
+            Mpa mpa = makeMpa(rowSet);
+            log.info("Найден mpa: {} {}", mpa.getId(), mpa.getName());
 
-            return Optional.of(genre);
+            return Optional.of(mpa);
         } else {
-            log.info("Жанр с идентификатором {} не найден.", id);
+            log.info("Mpa с идентификатором {} не найден.", id);
             return Optional.empty();
         }
     }
 
-    private Genre makeGenre(ResultSet rs) throws SQLException {
-        return Genre.builder()
+    private Mpa makeMpa(ResultSet rs) throws SQLException {
+        return Mpa.builder()
                 .id(getInt("id"))
                 .name(getString("name"))
                 .build();
     }
 
-    private Genre makeGenre(SqlRowSet rs) throws SQLException {
-        return Genre.builder()
+    private Mpa makeMpa(SqlRowSet rs) throws SQLException {
+        return Mpa.builder()
                 .id(getInt("id"))
                 .name(getString("name"))
                 .build();

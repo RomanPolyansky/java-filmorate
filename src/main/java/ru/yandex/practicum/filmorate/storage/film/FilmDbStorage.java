@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.security.PublicKey;
 import java.util.List;
 
 public class FilmDbStorage implements FilmStorage {

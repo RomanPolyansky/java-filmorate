@@ -1,38 +1,43 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import ru.yandex.practicum.filmorate.dao.UserDao;
+import ru.yandex.practicum.filmorate.dao.ReadWriteEntityDao;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
-    private final UserDao userDao;
+    private final ReadWriteEntityDao<User> userDao;
 
     @Autowired
-    public UserService(UserDao userDao) {
+    public UserService(ReadWriteEntityDao<User> userDao) {
         this.userDao = userDao;
     }
 
     public Optional<User> getUserById(int id) {
-        return userDao.getUserById(id);
+        try {
+            return userDao.getEntityById(id);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<User> getUsers() {
-        return userDao.getUsers();
+        try {
+            return userDao.getAll();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public User addUser(User user) {
         try {
-            return userDao.addUser(user);
+            return userDao.addEntity(user);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -40,7 +45,7 @@ public class UserService {
 
     public User changeUser(User user) {
         try {
-            return userDao.changeUser(user);
+            return userDao.changeEntity(user);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

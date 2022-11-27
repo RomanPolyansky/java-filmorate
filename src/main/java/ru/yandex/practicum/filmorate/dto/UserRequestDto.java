@@ -3,12 +3,9 @@ package ru.yandex.practicum.filmorate.dto;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 public class UserRequestDto {
 
