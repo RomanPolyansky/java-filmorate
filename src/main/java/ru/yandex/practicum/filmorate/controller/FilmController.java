@@ -31,8 +31,6 @@ public class FilmController {
         return filmService.getFilmById(Integer.parseInt(id));
     }
 
-    /*
-
     @PutMapping("/films/{id}/like/{userId}")
     public Film addLike(@PathVariable String id, @PathVariable String userId) {
         log.info("Получен запрос PUT /films/{id}/like/{userId}");
@@ -44,8 +42,6 @@ public class FilmController {
         log.info("Получен запрос REMOVE /films/{id}/like/{userId}");
         return filmService.removeLike(Integer.parseInt(id), Integer.parseInt(userId));
     }
-
-     */
 
     @GetMapping("/films/popular")
     public List<Film> getTopFilms(@RequestParam(defaultValue = "0") String count) {

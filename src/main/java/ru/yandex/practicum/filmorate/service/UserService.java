@@ -6,19 +6,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.ReadWriteStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserService {
-
-
-    private final ReadWriteStorage<User> userStorage;
+    private final UserStorage userStorage;
 
     @Autowired
-    public UserService(@Qualifier("DataBase") ReadWriteStorage<User> userStorage) {
+    public UserService(@Qualifier("DataBase") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 

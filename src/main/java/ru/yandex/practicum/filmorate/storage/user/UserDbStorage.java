@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.user;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.ReadWriteEntityDao;
+import ru.yandex.practicum.filmorate.dao.impl.UserDao;
 import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.ReadWriteStorage;
@@ -13,11 +14,11 @@ import java.util.Optional;
 
 @Component
 @Qualifier("DataBase")
-public class UserDbStorage implements ReadWriteStorage<User> {
+public class UserDbStorage implements UserStorage {
 
-    private final ReadWriteEntityDao<User> userDao;
+    private final UserDao userDao;
 
-    public UserDbStorage(ReadWriteEntityDao<User> userDao) {
+    public UserDbStorage(UserDao userDao) {
         this.userDao = userDao;
     }
 

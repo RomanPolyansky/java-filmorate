@@ -8,15 +8,17 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.comparator.FilmsByLikesComparator;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.ReadWriteStorage;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.*;
 
 @Service
 public class FilmService {
-    private final ReadWriteStorage<Film> filmStorage;
+    private final FilmStorage filmStorage;
+    private final int DEFAULT_TOP_FILMS_COUNT = 10;
 
     @Autowired
-    public FilmService(@Qualifier("DataBase") ReadWriteStorage<Film> filmStorage) {
+    public FilmService(@Qualifier("DataBase") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -36,28 +38,21 @@ public class FilmService {
         return filmStorage.change(film);
     }
 
-    /*
-
     public Film addLike(int filmId, int userId) {
-        Film film = filmStorage.getById(filmId);
-        film.getRate().add(userId);
-        return film;
+        filmStorage.addLike(filmId, userId);
+        return filmStorage.getById(filmId);
     }
 
     public Film removeLike(int filmId, int userId) {
-        Film film = filmStorage.getById(filmId);
-        if (!film.getRate().remove(userId)) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User's like Not Found");
-        return film;
+        filmStorage.removeLike(filmId, userId);
+        return filmStorage.getById(filmId);
     }
-
-     */
 
     public List<Film> getTopFilms(int count) {
         List<Film> films = filmStorage.getAll();
         films.sort(new FilmsByLikesComparator());
         if (count == 0) {
-            int TOP_COUNT = 10;
-            films = films.subList(0, Integer.min(TOP_COUNT - 1, films.size()));
+            films = films.subList(0, Integer.min(DEFAULT_TOP_FILMS_COUNT - 1, films.size()));
         } else {
             films = films.subList(0, count);
         }

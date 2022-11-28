@@ -13,7 +13,7 @@ import java.sql.*;
 import java.util.*;
 
 @Component
-public class UserDaoImpl implements ReadWriteEntityDao<User> {
+public class UserDaoImpl implements UserDao {
 
     private final Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
 
