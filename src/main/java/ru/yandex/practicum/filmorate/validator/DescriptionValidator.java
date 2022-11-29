@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.time.LocalDate;
 
 public class DescriptionValidator implements ConstraintValidator<ValidDesc, String> {
 
