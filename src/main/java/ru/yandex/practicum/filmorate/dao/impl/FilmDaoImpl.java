@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.ReadWriteEntityDao;
 import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -28,7 +29,7 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public List<Film> getAll() throws SQLException {
+    public List<Film> getAll() {
         List<Film> films = new ArrayList<>();
         String sql = "select f.id from films f";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql);
@@ -42,8 +43,8 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public Film addEntity(Film film) throws SQLException {
-        Long returnedId = simpleSave(film);
+    public Film addEntity(Film film) {
+        int returnedId = (int) simpleSave(film);
         log.info("Новый фильм с идентификатором {} добавлен.", returnedId);
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet("select * from films where id = ?", returnedId);
         putGenres(film, returnedId);
@@ -55,14 +56,17 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public Film changeEntity(Film film) throws SQLException {
-        int success = jdbcTemplate.update("UPDATE films " + "SET name = ?, description = ?, release_date = ?, duration = ? " + "where id = ?", film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getId());
-        if (success > 0) return getEntityById(film.getId()).get();
-        throw new EntityNotFoundException("Failed to change film with id: " + film.getId());
+    public Film changeEntity(Film film) throws EntityNotFoundException {
+        int success = jdbcTemplate.update("UPDATE films SET name = ?, description = ?, release_date = ?, duration = ? " + "where id = ?", film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getId());
+        if (success == 0) throw new EntityNotFoundException("Failed to change film with id: " + film.getId());
+        resetMpaAndRating(film.getId());
+        putGenres(film, film.getId());
+        putMpa(film, film.getId());
+        return getEntityById(film.getId()).get();
     }
 
     @Override
-    public Optional<Film> getEntityById(int id) throws SQLException {
+    public Optional<Film> getEntityById(int id) throws EntityNotFoundException {
         // выполняем запрос к базе данных.
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet("select * from films where id = ?", id);
 
@@ -74,7 +78,7 @@ public class FilmDaoImpl implements FilmDao {
             return Optional.of(film);
         } else {
             log.info("Фильм с идентификатором {} не найден.", id);
-            return Optional.empty();
+            throw new EntityNotFoundException("Фильм с идентификатором " + id + " не найден.");
         }
     }
 
@@ -114,10 +118,9 @@ public class FilmDaoImpl implements FilmDao {
 
     private List<Genre> getListOfGenre(int id) {
         List<Genre> genreList = new ArrayList<>();
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet("select g.* from film_genre fg join genres g on g.id = fg.genre_id where fg.film_id = ?", id);
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet("select DISTINCT  g.* from film_genre fg join genres g on g.id = fg.genre_id where fg.film_id = ?", id);
 
-
-        if (rowSet.next()) {
+        while (rowSet.next()) {
             genreList.add(Genre.builder()
                     .id(rowSet.getInt("id"))
                     .name(rowSet.getString("name"))
@@ -131,12 +134,12 @@ public class FilmDaoImpl implements FilmDao {
         return simpleJdbcInsert.executeAndReturnKey(film.toMap()).longValue();
     }
 
-    private void putMpa(Film film, Long id) {
+    private void putMpa(Film film, int id) {
         if (film.getMpa() != null)
             jdbcTemplate.update("INSERT into film_mpa (film_id, mpa_id) values (?,?)", id, film.getMpa().getId());
     }
 
-    private void putGenres(Film film, Long id) {
+    private void putGenres(Film film, int id) {
         if (film.getGenres() != null) {
             for (Genre genre : film.getGenres()) {
                 jdbcTemplate.update("INSERT into film_genre (film_id, genre_id) values (?,?)", id, genre.getId());
@@ -144,14 +147,28 @@ public class FilmDaoImpl implements FilmDao {
         }
     }
 
+    private void resetMpaAndRating(int id) {
+        jdbcTemplate.update("DELETE FROM film_genre WHERE film_id = ? ", id);
+        jdbcTemplate.update("DELETE FROM film_mpa WHERE film_id = ? ", id);
+    }
+
     @Override
-    public void addLike(int filmId, int userId) throws SQLException {
-        jdbcTemplate.update("INSERT into film_likes (film_id, like_user_id) values (?,?)", filmId, userId);
+    public void addLike(int filmId, int userId) {
+        try {
+            if (jdbcTemplate.update("INSERT into film_likes (film_id, like_user_id) values (?,?)", filmId, userId) == 0)
+                throw new EntityNotFoundException("Nothing on id " + filmId + " and user id " + userId + " was found");
+        } catch (RuntimeException e) {
+            throw new EntityNotFoundException("Nothing on id " + filmId + " and user id " + userId + " was found");
+        }
     }
 
     @Override
     public void removeLike(int filmId, int userId) {
-        if (jdbcTemplate.update("DELETE FROM film_likes WHERE film_id = ? AND like_user_id = ?", filmId, userId) == 0)
+        try {
+            if (jdbcTemplate.update("DELETE FROM film_likes WHERE film_id = ? AND like_user_id = ?", filmId, userId) == 0)
+                throw new EntityNotFoundException("Nothing on id " + filmId + " and user id " + userId + " was found");
+        } catch (RuntimeException e) {
             throw new EntityNotFoundException("Nothing on id " + filmId + " and user id " + userId + " was found");
+        }
     }
 }

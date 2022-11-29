@@ -37,35 +37,29 @@ public class UserService {
     }
 
     public User addFriend(int userId, int friendId) {
-        User user = userStorage.getById(userId);
-        userStorage.getById(friendId).getFriendsIdsSet().add(userId);
-        user.getFriendsIdsSet().add(friendId);
-        return user;
+        userStorage.addFriend(userId, friendId);
+        return getUserById(userId);
     }
 
     public User removeFriend(int userId, int friendId) {
-        User user = userStorage.getById(userId);
-        User friend = userStorage.getById(friendId);
-        if (!user.getFriendsIdsSet().remove(friendId)) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Friend Not Found");
-        userStorage.getById(friendId).getFriendsIdsSet().remove(userId);
-        return user;
+        userStorage.removeFriend(userId, friendId);
+        return getUserById(userId);
     }
 
     public List<User> getCommonFriends(int userId, int commonId) {
-        User user = userStorage.getById(userId);
-        User other = userStorage.getById(commonId);
+        User user = getUserById(userId);
+        User other = getUserById(commonId);
 
         List<User> commonUsers = new ArrayList<>();
-        for (Integer id : user.getFriendsIdsSet()) {
-            if (other.getFriendsIdsSet().contains(id)) commonUsers.add(userStorage.getById(id));
+        for (User user1 : user.getFriends()) {
+            for (User user2 : other.getFriends()) {
+                if (user1.equals(user2)) commonUsers.add(user1);
+            }
         }
         return commonUsers;
     }
 
     public List<User> getFriends(int id) {
-        List<User> listOfFriends = new ArrayList<>();
-        for (Integer friendId : userStorage.getById(id).getFriendsIdsSet())
-            listOfFriends.add(userStorage.getById(friendId));
-        return listOfFriends;
+        return new ArrayList<>(getUserById(id).getFriends());
     }
 }

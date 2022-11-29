@@ -25,8 +25,14 @@ public class FilmController {
         this.filmService = filmService;
     }
 
+    @GetMapping("/films")
+    public List<Film> getFilms() {
+        log.info("Получен запрос GET /films");
+        return filmService.getFilms();
+    }
+
     @GetMapping("/films/{id}")
-    public Film getFilms(@PathVariable String id) {
+    public Film getFilmById(@PathVariable String id) {
         log.info("Получен запрос GET /films/{id}");
         return filmService.getFilmById(Integer.parseInt(id));
     }
@@ -50,12 +56,6 @@ public class FilmController {
     }
 
 
-    @GetMapping("/films")
-    public List<Film> getFilms() {
-        log.info("Получен запрос GET /films");
-        return filmService.getFilms();
-    }
-
     @PostMapping(value = "/films")
     @ResponseBody
     public Film addFilm(@Valid @RequestBody FilmRequestDto dto) {
@@ -68,7 +68,7 @@ public class FilmController {
     @ResponseBody
     public Film changeFilm(@Valid @RequestBody FilmRequestDto dto) {
         Film film = dto.toEntity();
-        filmService.changeFilm(film);
+        film = filmService.changeFilm(film);
         log.info(film + " is put into db");
         return film;
     }

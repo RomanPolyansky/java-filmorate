@@ -26,13 +26,35 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/users")
+    public List<User> getUsers() {
+        log.info("Получен запрос GET /users");
+        return userService.getUsers();
+    }
+
     @GetMapping("/users/{id}")
     public User getUserById(@PathVariable String id) {
         log.info("Получен запрос GET /users/{id}");
         return userService.getUserById(Integer.parseInt(id));
     }
 
-    /*
+    @PostMapping(value = "/users")
+    @ResponseBody
+    public User addUser(@Valid @RequestBody UserRequestDto dto) {
+        log.info("Получен запрос POST /users");
+        User user = dto.toEntity();
+        return userService.addUser(user);
+    }
+
+    @PutMapping(value = "/users")
+    @ResponseBody
+    public User changeUser(@Valid @RequestBody UserRequestDto dto) {
+        log.info("Получен запрос PUT /users");
+        User user = dto.toEntity();
+        return userService.changeUser(user);
+    }
+
+    //TODO -------------------------------
 
     @PutMapping("/users/{id}/friends/{friendId}")
     public User addFriend(@PathVariable String id, @PathVariable String friendId) {
@@ -58,29 +80,7 @@ public class UserController {
         return userService.getCommonFriends(Integer.parseInt(id), Integer.parseInt(otherId));
     }
 
-     */
-
-    @GetMapping("/users")
-    public List<User> getUsers() {
-        log.info("Получен запрос GET /users");
-        return userService.getUsers();
-    }
-
-    @PostMapping(value = "/users")
-    @ResponseBody
-    public User addUser(@Valid @RequestBody UserRequestDto dto) {
-        log.info("Получен запрос POST /users");
-        User user = dto.toEntity();
-        return userService.addUser(user);
-    }
-
-    @PutMapping(value = "/users")
-    @ResponseBody
-    public User changeUser(@Valid @RequestBody UserRequestDto dto) {
-        log.info("Получен запрос PUT /users");
-        User user = dto.toEntity();
-        return userService.changeUser(user);
-    }
+    // -------------------------------
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

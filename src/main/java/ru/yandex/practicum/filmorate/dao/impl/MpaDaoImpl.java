@@ -6,10 +6,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.ReadEntityDao;
+import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +23,7 @@ import static javax.swing.UIManager.getString;
 @Component
 public class MpaDaoImpl implements ReadEntityDao<Mpa> {
 
-    private final Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
+    private final Logger log = LoggerFactory.getLogger(MpaDaoImpl.class);
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -29,9 +32,13 @@ public class MpaDaoImpl implements ReadEntityDao<Mpa> {
     }
 
     @Override
-    public List<Mpa> getAll() throws SQLException {
-        String sql = "select * from mpa";
-        List<Mpa> mpaList = jdbcTemplate.query(sql, (rs, rowNum) -> makeMpa(rs));
+    public List<Mpa> getAll() {
+        List<Mpa> mpaList = new ArrayList<>();
+        String sql = "select m.id from mpa m";
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sql);
+        while (rs.next()) {
+            mpaList.add(getEntityById(rs.getInt("id")).get());
+        }
         if (mpaList.isEmpty()) {
             return Collections.emptyList();
         }
@@ -39,7 +46,7 @@ public class MpaDaoImpl implements ReadEntityDao<Mpa> {
     }
 
     @Override
-    public Optional<Mpa> getEntityById(int id) throws SQLException {
+    public Optional<Mpa> getEntityById(int id)  {
         // выполняем запрос к базе данных.
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet("select * from mpa where id = ?", id);
 
@@ -51,21 +58,14 @@ public class MpaDaoImpl implements ReadEntityDao<Mpa> {
             return Optional.of(mpa);
         } else {
             log.info("Mpa с идентификатором {} не найден.", id);
-            return Optional.empty();
+            throw new EntityNotFoundException("Mpa с идентификатором " + id + " не найден.");
         }
     }
 
-    private Mpa makeMpa(ResultSet rs) throws SQLException {
+    private Mpa makeMpa(SqlRowSet rs) {
         return Mpa.builder()
-                .id(getInt("id"))
-                .name(getString("name"))
-                .build();
-    }
-
-    private Mpa makeMpa(SqlRowSet rs) throws SQLException {
-        return Mpa.builder()
-                .id(getInt("id"))
-                .name(getString("name"))
+                .id(rs.getInt("id"))
+                .name(rs.getString("name"))
                 .build();
     }
 }

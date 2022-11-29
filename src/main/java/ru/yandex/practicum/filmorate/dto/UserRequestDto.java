@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.dto;
 
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.validator.ValidBirthDate;
+import ru.yandex.practicum.filmorate.validator.ValidDate;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
@@ -15,24 +17,22 @@ public class UserRequestDto {
     @NotNull
     private String login;
     private String name;
-    @Min(0)
-    private Long daysAfterBirthday;
-    @NotNull
+    @ValidBirthDate
     private final LocalDate birthday;
 
-    public UserRequestDto(int id, String email, String login, String name, int daysAfterBirthday, LocalDate birthday) {
+    public UserRequestDto(int id, String email, String login, String name, LocalDate birthday) {
         this.id = id;
         this.email = email;
         this.login = login;
         this.name = name;
         this.birthday = birthday;
-        this.daysAfterBirthday = LocalDate.now().toEpochDay() - birthday.toEpochDay();
     }
 
     public User toEntity() {
         if (name.isEmpty()) name = login;
         return User.builder()
                 .id(id)
+                .login(login)
                 .email(email)
                 .name(name)
                 .birthday(birthday)

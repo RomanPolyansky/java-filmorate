@@ -6,10 +6,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.ReadEntityDao;
+import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -29,17 +32,21 @@ public class GenreDaoImpl implements ReadEntityDao<Genre> {
     }
 
     @Override
-    public List<Genre> getAll() throws SQLException {
-        String sql = "select * from genres";
-        List<Genre> genresList = jdbcTemplate.query(sql, (rs, rowNum) -> makeGenre(rs));
-        if (genresList.isEmpty()) {
+    public List<Genre> getAll() throws EntityNotFoundException {
+        List<Genre> genres = new ArrayList<>();
+        String sql = "select g.id from genres g";
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sql);
+        while (rs.next()) {
+            genres.add(getEntityById(rs.getInt("id")).get());
+        }
+        if (genres.isEmpty()) {
             return Collections.emptyList();
         }
-        return genresList;
+        return genres;
     }
 
     @Override
-    public Optional<Genre> getEntityById(int id) throws SQLException {
+    public Optional<Genre> getEntityById(int id) throws EntityNotFoundException {
         // выполняем запрос к базе данных.
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet("select * from genres where id = ?", id);
 
@@ -51,21 +58,15 @@ public class GenreDaoImpl implements ReadEntityDao<Genre> {
             return Optional.of(genre);
         } else {
             log.info("Жанр с идентификатором {} не найден.", id);
-            return Optional.empty();
+            throw new EntityNotFoundException("Жанр с идентификатором " + id + " не найден.");
         }
     }
 
-    private Genre makeGenre(ResultSet rs) throws SQLException {
-        return Genre.builder()
-                .id(getInt("id"))
-                .name(getString("name"))
-                .build();
-    }
 
-    private Genre makeGenre(SqlRowSet rs) throws SQLException {
+    private Genre makeGenre(SqlRowSet rs) {
         return Genre.builder()
-                .id(getInt("id"))
-                .name(getString("name"))
+                .id(rs.getInt("id"))
+                .name(rs.getString("name"))
                 .build();
     }
 }

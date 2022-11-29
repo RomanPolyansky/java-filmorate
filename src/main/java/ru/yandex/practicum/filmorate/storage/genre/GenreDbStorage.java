@@ -18,21 +18,11 @@ public class GenreDbStorage implements ReadStorage<Genre> {
 
     @Override
     public List<Genre> getAll() {
-        try {
-            return genreDao.getAll();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return genreDao.getAll();
     }
 
     @Override
     public Genre getById(int id) {
-        try {
-            Optional<Genre> genre = genreDao.getEntityById(id);
-            if (genre.isEmpty()) throw new EntityNotFoundException("Entity with id (" + ") not found");
-            return genre.get();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return genreDao.getEntityById(id).get();
     }
 }

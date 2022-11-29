@@ -18,21 +18,11 @@ public class MpaDbStorage implements ReadStorage<Mpa> {
 
     @Override
     public List<Mpa> getAll() {
-        try {
-            return mpaDao.getAll();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return mpaDao.getAll();
     }
 
     @Override
     public Mpa getById(int id) {
-        try {
-            Optional<Mpa> mpa = mpaDao.getEntityById(id);
-            if (mpa.isEmpty()) throw new EntityNotFoundException("Entity with id (" + ") not found");
-            return mpa.get();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return mpaDao.getEntityById(id).get();
     }
 }

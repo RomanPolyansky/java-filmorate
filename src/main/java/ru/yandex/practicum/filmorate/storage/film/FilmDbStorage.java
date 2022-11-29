@@ -26,57 +26,31 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getAll() {
-        try {
-            return filmDao.getAll();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return filmDao.getAll();
     }
 
     @Override
     public Film add(Film film) {
-        try {
-            return filmDao.addEntity(film);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return filmDao.addEntity(film);
     }
 
     @Override
     public Film change(Film film) {
-        try {
-            return filmDao.changeEntity(film);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return filmDao.changeEntity(film);
     }
 
     @Override
     public Film getById(int id) {
-        try {
-            Optional<Film> film = filmDao.getEntityById(id);
-            if (film.isEmpty()) throw new EntityNotFoundException("Entity with id (" + id + ") not found");
-            return film.get();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return filmDao.getEntityById(id).get();
     }
 
     @Override
     public void addLike(int filmId, int userId) {
-        try {
-            filmDao.addLike(filmId, userId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        filmDao.addLike(filmId, userId);
     }
 
     @Override
     public void removeLike(int filmId, int userId) {
-        try {
-            filmDao.removeLike(filmId, userId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        filmDao.removeLike(filmId, userId);
     }
 }

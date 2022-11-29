@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.validator.ValidDate;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -25,6 +26,7 @@ public class FilmRequestDto {
     @Min(0)
     private final int duration;
     private List<Genre> genres;
+    @NotNull
     private Mpa mpa;
     private final int rate;
 

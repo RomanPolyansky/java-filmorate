@@ -24,39 +24,31 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getAll() {
-        try {
-            return userDao.getAll();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return userDao.getAll();
     }
 
     @Override
     public User add(User user) {
-        try {
-            return userDao.addEntity(user);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return userDao.addEntity(user);
     }
 
     @Override
     public User change(User user) {
-        try {
-            return userDao.changeEntity(user);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return userDao.changeEntity(user);
     }
 
     @Override
     public User getById(int id) {
-        try {
-            Optional<User> user = userDao.getEntityById(id);
-            if (user.isEmpty()) throw new EntityNotFoundException("Entity with id (" + ") not found");
-            return user.get();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return userDao.getEntityById(id).get();
+    }
+
+    @Override
+    public void addFriend(int userId, int friendId) {
+        userDao.addFriend(userId, friendId);
+    }
+
+    @Override
+    public void removeFriend(int userId, int friendId) {
+        userDao.removeFriend(userId, friendId);
     }
 }
