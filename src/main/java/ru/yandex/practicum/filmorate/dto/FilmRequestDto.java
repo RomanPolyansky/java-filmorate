@@ -34,7 +34,8 @@ public class FilmRequestDto {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.descriptionLength = description.length();
+        if (description == null) this.description = "";
+        this.descriptionLength = this.description.length();
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.genres = genres;
