@@ -8,17 +8,11 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.ReadEntityDao;
 import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.User;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import static javax.swing.UIManager.getInt;
-import static javax.swing.UIManager.getString;
 
 @Component
 public class GenreDaoImpl implements ReadEntityDao<Genre> {

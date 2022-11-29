@@ -13,16 +13,9 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.system.Validator;
-import ru.yandex.practicum.filmorate.validator.ValidBirthDate;
-import ru.yandex.practicum.filmorate.validator.ValidDate;
 
-import javax.validation.Constraint;
 import javax.validation.ConstraintViolation;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 

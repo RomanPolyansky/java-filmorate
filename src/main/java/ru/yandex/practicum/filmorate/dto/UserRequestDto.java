@@ -2,10 +2,8 @@ package ru.yandex.practicum.filmorate.dto;
 
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validator.ValidBirthDate;
-import ru.yandex.practicum.filmorate.validator.ValidDate;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 

@@ -3,16 +3,10 @@ package ru.yandex.practicum.filmorate.storage.film;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.dao.ReadWriteEntityDao;
 import ru.yandex.practicum.filmorate.dao.impl.FilmDao;
-import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.ReadWriteStorage;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @Qualifier("DataBase")
