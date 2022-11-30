@@ -36,6 +36,7 @@ public class MpaDaoImpl implements ReadEntityDao<Mpa> {
         if (mpaList.isEmpty()) {
             return Collections.emptyList();
         }
+        log.info("returning {} mpas", mpaList.size());
         return mpaList;
     }
 

@@ -33,6 +33,7 @@ public class UserDaoImpl implements UserDao {
         if (users.isEmpty()) {
             return Collections.emptyList();
         }
+        log.info("returning {} users", users.size());
         return users;
     }
 

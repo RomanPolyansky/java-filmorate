@@ -32,8 +32,10 @@ public class FilmDaoImpl implements FilmDao {
             films.add(getEntityById(rs.getInt("id")).get());
         }
         if (films.isEmpty()) {
+            log.info("no films found");
             return Collections.emptyList();
         }
+        log.info("returning {} films", films.size());
         return films;
     }
 
@@ -57,6 +59,7 @@ public class FilmDaoImpl implements FilmDao {
         resetMpaAndRating(film.getId());
         putGenres(film, film.getId());
         putMpa(film, film.getId());
+
         return getEntityById(film.getId()).get();
     }
 

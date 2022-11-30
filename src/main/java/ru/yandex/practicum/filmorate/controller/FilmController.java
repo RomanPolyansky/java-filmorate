@@ -69,7 +69,7 @@ public class FilmController {
     public Film changeFilm(@Valid @RequestBody FilmRequestDto dto) {
         Film film = dto.toEntity();
         film = filmService.changeFilm(film);
-        log.info(film + " is put into db");
+        log.info(film + " is changed into db");
         return film;
     }
 

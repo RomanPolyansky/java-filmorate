@@ -36,6 +36,7 @@ public class GenreDaoImpl implements ReadEntityDao<Genre> {
         if (genres.isEmpty()) {
             return Collections.emptyList();
         }
+        log.info("returning {} genres", genres.size());
         return genres;
     }
 
