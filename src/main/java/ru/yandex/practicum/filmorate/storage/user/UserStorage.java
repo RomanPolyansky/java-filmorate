@@ -1,12 +1,11 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.ReadWriteStorage;
 
-import java.util.List;
+public interface UserStorage extends ReadWriteStorage<User> {
 
-public interface UserStorage {
-    List<User> getUsers();
-    User addUser(User user);
-    User changeUser(User user);
-    User getUserById(int id);
+    void addFriend(int userId, int friendId);
+
+    void removeFriend(int userId, int friendId);
 }

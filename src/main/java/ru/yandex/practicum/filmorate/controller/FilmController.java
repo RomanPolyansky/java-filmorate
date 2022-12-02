@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.dto.FilmRequestDto;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,12 +25,17 @@ public class FilmController {
         this.filmService = filmService;
     }
 
+    @GetMapping("/films")
+    public List<Film> getFilms() {
+        log.info("Получен запрос GET /films");
+        return filmService.getFilms();
+    }
+
     @GetMapping("/films/{id}")
-    public Film getFilms(@PathVariable String id) {
+    public Film getFilmById(@PathVariable String id) {
         log.info("Получен запрос GET /films/{id}");
         return filmService.getFilmById(Integer.parseInt(id));
     }
-
 
     @PutMapping("/films/{id}/like/{userId}")
     public Film addLike(@PathVariable String id, @PathVariable String userId) {
@@ -49,25 +56,20 @@ public class FilmController {
     }
 
 
-    @GetMapping("/films")
-    public List<Film> getFilms() {
-        log.info("Получен запрос GET /films");
-        return filmService.getFilms();
-    }
-
     @PostMapping(value = "/films")
     @ResponseBody
-    public Film addFilm(@RequestBody Film film) {
-        filmService.addFilm(film);
-        log.info(film + " is put into db");
-        return film;
+    public Film addFilm(@Valid @RequestBody FilmRequestDto dto) {
+        log.info("Получен запрос POST /users");
+        Film film = dto.toEntity();
+        return filmService.addFilm(film);
     }
 
     @PutMapping(value = "/films")
     @ResponseBody
-    public Film changeFilm(@RequestBody Film film) {
-        filmService.changeFilm(film);
-        log.info(film + " is put into db");
+    public Film changeFilm(@Valid @RequestBody FilmRequestDto dto) {
+        Film film = dto.toEntity();
+        film = filmService.changeFilm(film);
+        log.info(film + " is changed into db");
         return film;
     }
 
